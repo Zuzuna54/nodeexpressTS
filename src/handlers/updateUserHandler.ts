@@ -113,7 +113,7 @@ const updateUserHandler = async (req: Request, res: Response) => {
                     await userService.updateUser(id, name, email, phone, password).then((user: any) => {
 
                         Logger.info(`User updated\n`);
-                        res.status(200).send({ message: 'User updated', result: "success" });
+                        res.status(200).send({ message: 'User updated', result: "success", user: user });
                         return;
 
                     }).catch((error: any) => {

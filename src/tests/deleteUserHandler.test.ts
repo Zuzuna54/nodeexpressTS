@@ -2,7 +2,8 @@ import request from 'supertest';
 import app from '../app';
 import deleteUserHandler from '../handlers/deleteUserHandler';
 import { Request, Response } from 'express';
-import { getUser, deleteUser } from '../sqlCalls/userService/userService'; // Update the path as needed
+import userService from '../sqlCalls/userService/userService';
+
 
 jest.mock('../sqlCalls/userCall'); // Update the path as needed
 
@@ -10,8 +11,8 @@ describe('DELETE /awesome/applicant/:id', () => {
     it('should delete a user', async () => {
         // Mock the deleteUser function response
         const mockDeletedUser = { message: "User with the id: 1 deleted", result: "success", };
-        (deleteUser as jest.Mock).mockResolvedValue([mockDeletedUser]);
-        (getUser as jest.Mock).mockResolvedValue([])
+        (userService.deleteUser as jest.Mock).mockResolvedValue([mockDeletedUser]);
+        (userService.getUser as jest.Mock).mockResolvedValue([])
 
         let id = "1"
 
@@ -37,8 +38,8 @@ describe('DELETE /awesome/applicant/:id', () => {
 
     it('should handle user not found', async () => {
         // Mock the deleteUser function response
-        (deleteUser as jest.Mock).mockReturnValue({ error: 'User not deleted' });
-        (getUser as jest.Mock).mockResolvedValue([]);
+        (userService.deleteUser as jest.Mock).mockReturnValue({ error: 'User not deleted' });
+        (userService.getUser as jest.Mock).mockResolvedValue([]);
 
         let id = "1"
 
@@ -63,7 +64,7 @@ describe('DELETE /awesome/applicant/:id', () => {
 
     it('should handle internal server error', async () => {
         // Mock the deleteUser function response
-        (deleteUser as jest.Mock).mockRejectedValue({ error: 'Internal Server Error' });
+        (userService.deleteUser as jest.Mock).mockRejectedValue({ error: 'Internal Server Error' });
 
         const response = await request(app).delete('/awesome/applicant/1');
 

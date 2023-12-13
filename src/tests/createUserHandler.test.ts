@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import createUserHandler from '../handlers/createUserHandler';
-import { createUser } from '../sqlCalls/userService/userService';
+import userService from '../sqlCalls/userService/userService';
+
 
 jest.mock('../sqlCalls/userCall');
 
@@ -18,7 +19,7 @@ describe('POST /awesome/applicant', () => {
         // Mock the createUser function response
 
 
-        (createUser as jest.Mock).mockResolvedValue([mockUser]);
+        (userService.createUser as jest.Mock).mockResolvedValue([mockUser]);
 
         const req = {
             body: { name, email, phone },
@@ -43,7 +44,7 @@ describe('POST /awesome/applicant', () => {
 
     it('Should Handle Internal Server Error', async () => {
         // Mock the createUser function response
-        (createUser as jest.Mock).mockRejectedValue(new Error('Internal Server Error'));
+        (userService.createUser as jest.Mock).mockRejectedValue(new Error('Internal Server Error'));
 
 
         const req = {
@@ -69,7 +70,7 @@ describe('POST /awesome/applicant', () => {
 
     it('should handle internal server error', async () => {
         // Mock the createUser function response
-        (createUser as jest.Mock).mockRejectedValue(new Error('Invalid input'));
+        (userService.createUser as jest.Mock).mockRejectedValue(new Error('Invalid input'));
 
 
         const req = {
