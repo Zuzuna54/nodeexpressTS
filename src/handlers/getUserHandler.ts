@@ -1,22 +1,53 @@
 import { Request, Response } from 'express';
-import { getUser } from '../sqlCalls/userService/userService';
-
+import userService from '../sqlCalls/userService/userService';
+import Logger from '../logger/Logger';
 
 const getUserHandler = async (req: Request, res: Response) => {
-    const { id } = req.params;
 
-    if (!id) return res.status(400).json({ error: 'Bad Request' });
     try {
-        const user = await getUser(id);
-        if (user.length === 0) {
-            return res.status(404).json({ error: 'User not found' });
-        } else {
-            res.status(200).json({ result: "success", data: user[0], message: "User retrived successfully" });
+
+        const { id } = req.params;
+
+        // Validate Id exists
+        if (!id) {
+
+            Logger.error(`Invalid input: id: ${id}\n`);
+            res.status(400).json({ error: 'Invalid input' });
+            return;
+
         }
+
+        //Get user
+        await userService.getUser(id).then((user: any) => {
+
+            if (user.length > 0) {
+
+                Logger.info(`User found\n`);
+                res.status(200).send({ message: 'User found', user: user, result: "success" });
+                return;
+
+            } else {
+
+                Logger.error(`User does not exist\n`);
+                res.status(400).send({ message: 'User does not exist' });
+                return;
+
+            }
+
+        }).catch((error: any) => {
+
+            Logger.error(`Error getting user: ${error}\n`);
+            res.status(500).send({ message: 'Internal Server Error' });
+            return;
+
+        });
     } catch (error) {
-        console.error('Error fetching users:', error);
+
+        console.error('Error getting user:', error);
         res.status(500).json({ error: 'Internal Server Error' });
+
     }
+
 };
 
 export default getUserHandler;
