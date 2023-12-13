@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { createUser } from '../sqlCalls/userCall';
+import { createUser } from '../sqlCalls/userService/userService';
 
 
 const createUserHandler = async (req: Request, res: Response) => {
-    const { name, email, phone } = req.body;
+    const { name, email, phone, password } = req.body;
 
     // Validate that name, email, and phone are provided in the request body
     if (!name || !email || !phone) {
@@ -12,7 +12,7 @@ const createUserHandler = async (req: Request, res: Response) => {
 
 
     try {
-        const user = await createUser(name, email, phone);
+        const user = await createUser(name, email, phone, password);
         res.status(200).json({ result: "success", user: user[0], message: "User created successfully" });
     } catch (error) {
         console.error('Error creating applicant:', error);

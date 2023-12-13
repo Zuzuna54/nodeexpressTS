@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { updateUser } from '../sqlCalls/userCall';
+import { updateUser } from '../sqlCalls/userService/userService';
 
 
 const updateUserHandler = async (req: Request, res: Response) => {
@@ -10,7 +10,7 @@ const updateUserHandler = async (req: Request, res: Response) => {
         if (!user.length) {
             return res.status(404).json({ error: 'User not found' });
         } else {
-            res.status(200).json({ result: "success", userAfterUpdate: user[0], message: "User updated successfully!"});
+            res.status(200).json({ result: "success", userAfterUpdate: user[0], message: "User updated successfully!" });
         }
     } catch (error) {
         console.log(res + " " + error);
